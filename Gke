@@ -1,0 +1,153 @@
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ gcloud container clusters get-credentials cluster-1 --zone asia-southeast1-a --project vaulted-acolyte-298513
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for cluster-1.
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ gcloud components install kubectl
+ERROR: (gcloud.components.install) 
+You cannot perform this action because the Cloud SDK component manager 
+is disabled for this installation. You can run the following command 
+to achieve the same result for this installation: 
+
+sudo apt-get install kubectl
+
+
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ sudo apt-get install kubectl
+[sudo] password for kamisetty: 
+9Sorry, try again.
+[sudo] password for kamisetty: 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+kubectl is already the newest version (1.19.4-00).
+0 upgraded, 0 newly installed, 0 to remove and 49 not upgraded.
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ git clone -b v1.6.0 https://github.com/percona/percona-xtradb-cluster-operator
+
+Command 'git' not found, but can be installed with:
+
+sudo apt install git
+
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ sudo apt install git
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  git-man liberror-perl
+Suggested packages:
+  git-daemon-run | git-daemon-sysvinit git-doc git-el git-email git-gui gitk gitweb git-cvs git-mediawiki git-svn
+The following NEW packages will be installed:
+  git git-man liberror-perl
+0 upgraded, 3 newly installed, 0 to remove and 49 not upgraded.
+Need to get 4,741 kB of archives.
+After this operation, 34.0 MB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://in.archive.ubuntu.com/ubuntu bionic/main amd64 liberror-perl all 0.17025-1 [22.8 kB]
+Get:2 http://in.archive.ubuntu.com/ubuntu bionic-updates/main amd64 git-man all 1:2.17.1-1ubuntu0.7 [804 kB]
+Get:3 http://in.archive.ubuntu.com/ubuntu bionic-updates/main amd64 git amd64 1:2.17.1-1ubuntu0.7 [3,915 kB]                                 
+Fetched 4,741 kB in 5min 50s (13.5 kB/s)                                                                                                     
+Selecting previously unselected package liberror-perl.
+(Reading database ... 224002 files and directories currently installed.)
+Preparing to unpack .../liberror-perl_0.17025-1_all.deb ...
+Unpacking liberror-perl (0.17025-1) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../git-man_1%3a2.17.1-1ubuntu0.7_all.deb ...
+Unpacking git-man (1:2.17.1-1ubuntu0.7) ...
+Selecting previously unselected package git.
+Preparing to unpack .../git_1%3a2.17.1-1ubuntu0.7_amd64.deb ...
+Unpacking git (1:2.17.1-1ubuntu0.7) ...
+Setting up git-man (1:2.17.1-1ubuntu0.7) ...
+Setting up liberror-perl (0.17025-1) ...
+Setting up git (1:2.17.1-1ubuntu0.7) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ git clone -b v1.6.0 https://github.com/percona/percona-xtradb-cluster-operator
+Cloning into 'percona-xtradb-cluster-operator'...
+remote: Enumerating objects: 33, done.
+remote: Counting objects: 100% (33/33), done.
+remote: Compressing objects: 100% (22/22), done.
+remote: Total 26512 (delta 16), reused 20 (delta 10), pack-reused 26479
+Receiving objects: 100% (26512/26512), 24.54 MiB | 283.00 KiB/s, done.
+Resolving deltas: 100% (14770/14770), done.
+Note: checking out 'aba26f372c9d17646eb34a26a84a1c5a5cfec105'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b <new-branch-name>
+
+kamisetty@kamisetty-HP-Pavilion-Notebook:~$ cd percona-xtradb-cluster-operator
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl apply -f deploy/crd.yaml
+customresourcedefinition.apiextensions.k8s.io/perconaxtradbclusters.pxc.percona.com created
+customresourcedefinition.apiextensions.k8s.io/perconaxtradbclusterbackups.pxc.percona.com created
+customresourcedefinition.apiextensions.k8s.io/perconaxtradbclusterrestores.pxc.percona.com created
+customresourcedefinition.apiextensions.k8s.io/perconaxtradbbackups.pxc.percona.com created
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl create namespace pxc
+namespace/pxc created
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl config set-context $(kubectl config current-context) --namespace=pxc
+Context "gke_vaulted-acolyte-298513_asia-southeast1-a_cluster-1" modified.
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ 
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl apply -f deploy/rbac.yaml
+role.rbac.authorization.k8s.io/percona-xtradb-cluster-operator created
+serviceaccount/percona-xtradb-cluster-operator created
+rolebinding.rbac.authorization.k8s.io/service-account-percona-xtradb-cluster-operator created
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl apply -f deploy/operator.yaml
+deployment.apps/percona-xtradb-cluster-operator created
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl apply -f deploy/secrets.yaml
+secret/my-cluster-secrets created
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl apply -f deploy/cr.yaml
+perconaxtradbcluster.pxc.percona.com/cluster1 created
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl get pods
+NAME                                               READY   STATUS    RESTARTS   AGE
+cluster1-haproxy-0                                 1/2     Running    0          29s
+cluster1-pxc-0                                     1/1     Running    0          29s
+percona-xtradb-cluster-operator-79d786dcfb-llr9k   1/1     Running    0          87s
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ kubectl get pods
+NAME                                               READY   STATUS    RESTARTS   AGE
+cluster1-pxc-node-0                                1/1     Running   0          7m38s
+cluster1-pxc-node-1                                1/1     Running   0          4m46s
+cluster1-pxc-node-2                                1/1     Running   0          2m25s
+cluster1-pxc-proxysql-0                            1/1     Running   0          7m38s
+percona-xtradb-cluster-operator-5857dfcb6c-g7bbg   1/1     Running   0          8m1s
+$ kubectl run -i --rm --tty percona-client --image=percona:5.7 --restart=Never -- bash -il
+If you don't see a command prompt, try pressing enter.
+$ mysql -h cluster1-pxc-proxysql -uroot -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3619
+Server version: 5.7.30 (ProxySQL)
+
+Copyright (c) 2009-2019 Percona LLC and/or its affiliates
+Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> \s
+--------------
+mysql  Ver 14.14 Distrib 5.7.25-28, for Linux (x86_64) using  6.2
+
+Connection id:		361
+Current database:	information_schema
+Current user:		root@cluster1-pxc-proxysql-0.cluster1-pxc-proxysql.pxc.svc.cluste
+SSL:			Not in use
+Current pager:		stdout
+Using outfile:		''
+Using delimiter:	;
+Server version:		5.7.30 (ProxySQL)
+Protocol version:	10
+Connection:		cluster1-pxc-proxysql via TCP/IP
+Server characterset:	latin1
+Db     characterset:	utf8
+Client characterset:	latin1
+Conn.  characterset:	latin1
+TCP port:		3306
+Uptime:			14 min 1 sec
+
+Threads: 1  Questions: 3  Slow queries: 0
+
+kamisetty@kamisetty-HP-Pavilion-Notebook:~/percona-xtradb-cluster-operator$ 
+
